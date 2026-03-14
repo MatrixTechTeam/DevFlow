@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevFlow</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!--Header-->
+    <header>
+      <h1>DevFlow</h1>
+      <button id="theme-toggle">Dark Mode</button>
+    </header>
+    <!--Timer Section-->
+    <section id="timer-section">
+      <h2>Focus Timer</h2>
+      <p id="timer-mode">Work</p>
+      <p id="timer-display">25:00</p>
+      <p id="current-task">No Task Selected</p>
+      <button id="start-btn">Start</button>
+      <button id="pause-btn">Pause</button>
+      <button id="reset-btn">Reset</button>
+    </section>
+    <!--Task Board Section-->
+    <section id="tasks-section">
+      <h2>Task Board</h2>
+      <div id="task-form">
+        <input type="text" id="task-input" placeholder="Enter a Task" />
+        <select id="priority-select">
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+        <button id="add-task-btn">Add Task</button>
+      </div>
+      <ul id="task-list"></ul>
+    </section>
+    <!--Daily Log Section-->
+    <section id="log-section">
+      <h2>Daily Log</h2>
+      <div id="stats-bar">
+        <span id="tasks-completed">Tasks Completed</span>
+        <span id="focus-time">Focus Time</span>
+        <ul id="log-list"></ul>
+        <button id="reset-day-btn">Reset Day</button>
+      </div>
+    </section>
+    <!--Footer-->
+    <footer>
+      <p>Built by Gerald &bull;RHDC Stage 1</p>
+    </footer>
+    <script src="app.js"></script>
+  </body>
+</html>
