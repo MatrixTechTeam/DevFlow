@@ -68,3 +68,48 @@ taskList.addEventListener('click', function(e) {
   }
 })
 renderTasks()
+let timer = null
+let isRunning = false
+let timeLeft = 1500
+let isWorkMode = true
+
+function updateDisplay() {
+  const minutes = Math.floor(timeLeft / 60)
+  const seconds = timeLeft % 60
+  timerDisplay.textContent = minutes + ':' + (seconds < 10 ? '0' + seconds : seconds)
+}
+function startTimer () {
+  if (isRunning) return
+  isRunning = true
+  timer = setInterval(function() {
+    timeLeft--
+    if (timeLeft === 0) {
+      clearInterval(timer)
+      isRunning = false
+      isWorkMode = !isWorkMode
+      timeLeft = isWorkMode ? 1500 : 300
+      timerMode.textContent = isWorkMode ? 'Work' : 'Break'
+      updateDisplay()
+    }
+    updateDisplay()
+  }, 1000)
+}
+function pauseTimer () {
+  clearInterval(timer)
+  isRunning = false
+}
+function resetTimer () {
+  clearInterval(timer)
+  isRunning = false
+  timeLeft = 1500
+  updateDisplay ()
+}
+startButton.addEventListener('click', function() {
+  startTimer()
+})
+pauseButton.addEventListener('click', function() {
+  pauseTimer()
+})
+resetButton.addEventListener('click', function() {
+  resetTimer()
+})
