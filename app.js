@@ -46,6 +46,7 @@ addTaskButton.addEventListener('click', function () {
   tasks.push(task);
   saveTasks();
   renderTasks();
+  currentTask.textContent = 'Focusing on: ' + text
   taskInput.value = '';
 });
 taskList.addEventListener('click', function (e) {
@@ -56,6 +57,7 @@ taskList.addEventListener('click', function (e) {
     });
     saveTasks();
     renderTasks();
+    currentTask.textContent = 'No task selected'
   }
   if (e.target.classList.contains('complete-btn')) {
       const completedTask = tasks.find(function (task) {
@@ -72,6 +74,7 @@ taskList.addEventListener('click', function (e) {
     }
     saveTasks();
     renderTasks();
+    currentTask.textContent = 'No task selected'
   }
 });
 renderTasks();
@@ -79,6 +82,7 @@ let timer = null;
 let isRunning = false;
 let timeLeft = 1500;
 let isWorkMode = true;
+let focusMinutes = localStorage.getItem('focusMinutes') ? Number(localStorage.getItem('focusMinutes')) : 0
 
 function updateDisplay() {
   const minutes = Math.floor(timeLeft / 60);
@@ -94,6 +98,21 @@ function startTimer() {
     if (timeLeft === 0) {
       clearInterval(timer);
       isRunning = false;
+      const audioCtx = new AudioContext()
+      const oscillator = audioCtx.createOscillator()
+      const gainNode = audioCtx.createGain()
+      oscillator.connect(gainNode)
+      gainNode.connect(audioCtx.destination)
+      oscillator.frequency.value = 600
+      gainNode.gain.setValueAtTime(1, audioCtx.currentTime)
+      gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3)
+      oscillator.start(audioCtx.currentTime)
+      oscillator.stop(audioCtx.currentTime + 0.5)
+      if (isWorkMode) {
+        focusMinutes += 25
+        localStorage.setItem('focusMinutes', focusMinutes)
+        focusTime.textContent = 'Focus time: ' + focusMinutes + ' mins'
+      }
       isWorkMode = !isWorkMode;
       timeLeft = isWorkMode ? 1500 : 300;
       timerMode.textContent = isWorkMode ? 'Work' : 'Break';
@@ -153,6 +172,7 @@ resetDayButton.addEventListener('click', function() {
   saveLog()
   renderLog()
   updateStats()
+  focusTime.textContent = 'Focus time: ' + focusMinutes + ' mins'
 })
 themeToggle.addEventListener('click', function() {
   document.body.classList.toggle('light-mode')
