@@ -142,9 +142,25 @@ function updateStats() {
 renderTasks()
 renderLog()
 updateStats()
+if (localStorage.getItem('theme') === 'light') {
+  document.body.classList.add('light-mode')
+  themeToggle.textContent = 'Dark Mode'
+}
+
+
 resetDayButton.addEventListener('click', function() {
   log = []
   saveLog()
   renderLog()
   updateStats()
+})
+themeToggle.addEventListener('click', function() {
+  document.body.classList.toggle('light-mode')
+  if (document.body.classList.contains('light-mode')) {
+    localStorage.setItem('theme', 'light')
+    themeToggle.textContent = 'Dark Mode'
+  } else {
+    localStorage.setItem('theme', 'dark')
+    themeToggle.textContent = 'Light Mode'
+  }
 })
