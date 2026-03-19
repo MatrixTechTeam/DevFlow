@@ -271,3 +271,22 @@ footer{
     width: 100%;
   }
 }
+#filter-buttons{
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+#filter-buttons button{
+  background-color: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+}
+#filter-buttons button.active{
+  background-color: var(--accent);
+  color: var(--text-primary);
+  border-color: var(--accent);
+}

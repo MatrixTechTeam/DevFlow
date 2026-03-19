@@ -68,7 +68,7 @@ addTaskButton.addEventListener('click', function () {
   saveTasks();
   renderTasks();
   currentTask.textContent = 'Focusing on: ' + capitalisedText,
-  
+
   taskInput.value = '';
 });
 taskList.addEventListener('click', function (e) {
@@ -227,16 +227,32 @@ themeToggle.addEventListener('click', function() {
 filterAll.addEventListener('click', function() {
   currentFilter = 'all'
   renderTasks()
+    document.querySelectorAll('#filter-buttons button').forEach(function(btn) {
+        btn.classList.remove('active')
+    })
+    filterAll.classList.add('active')
 })
 filterLow.addEventListener('click', function() {
   currentFilter = 'low'
   renderTasks()
+    document.querySelectorAll('#filter-buttons button').forEach(function(btn) {
+        btn.classList.remove('active')
+    })
+    filterLow.classList.add('active')
 })
 filterMedium.addEventListener('click', function() {
   currentFilter = 'medium'
   renderTasks()
+    document.querySelectorAll('#filter-buttons button').forEach(function(btn) {
+        btn.classList.remove('active')
+    })
+    filterMedium.classList.add('active')
 })
 filterHigh.addEventListener('click', function() {
   currentFilter = 'high'
   renderTasks()
+    document.querySelectorAll('#filter-buttons button').forEach(function(btn) {
+        btn.classList.remove('active')
+    })
+    filterHigh.classList.add('active')
 })
