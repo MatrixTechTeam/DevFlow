@@ -13,7 +13,14 @@ const tasksCompleted = document.getElementById('tasks-completed');
 const focusTime = document.getElementById('focus-time');
 const logList = document.getElementById('log-list');
 const resetDayButton = document.getElementById('reset-day-btn');
+const taskCount = document.querySelector('#tasks-section h2')
+const sessionStreakElement = document.getElementById('session-streak')
+const filterAll = document.getElementById('filter-all')
+const filterLow = document.getElementById('filter-low')
+const filterMedium = document.getElementById('filter-medium')
+const filterHigh = document.getElementById('filter-high')
 
+let currentFilter = 'all'
 let tasks = localStorage.getItem('tasks')
   ? JSON.parse(localStorage.getItem('tasks'))
   : [];
@@ -22,7 +29,10 @@ function saveTasks() {
 }
 function renderTasks() {
   taskList.innerHTML = '';
-  tasks.forEach(function (task) {
+  let filteredTasks = currentFilter === 'all' ? tasks : tasks.filter(function(task) {
+    return task.priority === currentFilter
+  })
+  filteredTasks.forEach(function (task) {
     const li = document.createElement('li');
     if (task.completed) {
       li.classList.add('done');
@@ -34,19 +44,31 @@ function renderTasks() {
 
     taskList.appendChild(li);
   });
+  if (tasks.length > 0) {
+  taskCount.textContent = 'Task Board (' + tasks.length + ')'
+  } else {
+    taskCount.textContent = 'Task Board'
+  }
+
 }
 addTaskButton.addEventListener('click', function () {
   const text = taskInput.value.trim();
+  const capitalisedText = text.charAt(0).toUpperCase() + text.slice(1);
   if (text === '') return;
+  if (!/^[a-zA-Z0-9 ]+$/.test(text)) {
+    currentTask.textContent = 'Only letters and numbers allowed!'
+    return
+  }
   const task = {
-    text: text,
+    text: capitalisedText,
     priority: prioritySelect.value,
     id: Date.now(),
   };
   tasks.push(task);
   saveTasks();
   renderTasks();
-  currentTask.textContent = 'Focusing on: ' + text
+  currentTask.textContent = 'Focusing on: ' + capitalisedText,
+  
   taskInput.value = '';
 });
 taskList.addEventListener('click', function (e) {
@@ -57,7 +79,8 @@ taskList.addEventListener('click', function (e) {
     });
     saveTasks();
     renderTasks();
-    currentTask.textContent = 'No task selected'
+    resetTimer();
+    currentTask.textContent = tasks.length > 0 ? 'Focusing on: ' + tasks[0].text : 'No task selected'
   }
   if (e.target.classList.contains('complete-btn')) {
       const completedTask = tasks.find(function (task) {
@@ -74,7 +97,8 @@ taskList.addEventListener('click', function (e) {
     }
     saveTasks();
     renderTasks();
-    currentTask.textContent = 'No task selected'
+    resetTimer();
+    currentTask.textContent = tasks.length > 0 ? 'Focusing on: ' + tasks[0].text : 'No task selected'
   }
 });
 renderTasks();
@@ -83,6 +107,8 @@ let isRunning = false;
 let timeLeft = 1500;
 let isWorkMode = true;
 let focusMinutes = localStorage.getItem('focusMinutes') ? Number(localStorage.getItem('focusMinutes')) : 0
+let sessionStreak = localStorage.getItem('sessionStreak') ? Number(localStorage.getItem('sessionStreak')) : 0
+
 
 function updateDisplay() {
   const minutes = Math.floor(timeLeft / 60);
@@ -91,6 +117,10 @@ function updateDisplay() {
     minutes + ':' + (seconds < 10 ? '0' + seconds : seconds);
 }
 function startTimer() {
+  if (tasks.length === 0) {
+    currentTask.textContent = 'Add a task first!'
+    return
+  }
   if (isRunning) return;
   isRunning = true;
   timer = setInterval(function () {
@@ -112,6 +142,9 @@ function startTimer() {
         focusMinutes += 25
         localStorage.setItem('focusMinutes', focusMinutes)
         focusTime.textContent = 'Focus time: ' + focusMinutes + ' mins'
+        sessionStreak++
+        localStorage.setItem('sessionStreak', sessionStreak)
+        sessionStreakElement.textContent = 'Sessions: ' + sessionStreak
       }
       isWorkMode = !isWorkMode;
       timeLeft = isWorkMode ? 1500 : 300;
@@ -161,6 +194,8 @@ function updateStats() {
 renderTasks()
 renderLog()
 updateStats()
+focusTime.textContent = 'Focus time: ' + focusMinutes + ' mins'
+sessionStreakElement.textContent = 'Sessions: ' + sessionStreak
 if (localStorage.getItem('theme') === 'light') {
   document.body.classList.add('light-mode')
   themeToggle.textContent = 'Dark Mode'
@@ -172,7 +207,12 @@ resetDayButton.addEventListener('click', function() {
   saveLog()
   renderLog()
   updateStats()
-  focusTime.textContent = 'Focus time: ' + focusMinutes + ' mins'
+  sessionStreak = 0
+  localStorage.setItem('sessionStreak', 0)
+  sessionStreakElement.textContent = 'Sessions: 0'
+  focusMinutes = 0
+  localStorage.setItem('focusMinutes', 0)
+  focusTime.textContent = 'Focus time: 0 mins'
 })
 themeToggle.addEventListener('click', function() {
   document.body.classList.toggle('light-mode')
@@ -183,4 +223,20 @@ themeToggle.addEventListener('click', function() {
     localStorage.setItem('theme', 'dark')
     themeToggle.textContent = 'Light Mode'
   }
+})
+filterAll.addEventListener('click', function() {
+  currentFilter = 'all'
+  renderTasks()
+})
+filterLow.addEventListener('click', function() {
+  currentFilter = 'low'
+  renderTasks()
+})
+filterMedium.addEventListener('click', function() {
+  currentFilter = 'medium'
+  renderTasks()
+})
+filterHigh.addEventListener('click', function() {
+  currentFilter = 'high'
+  renderTasks()
 })

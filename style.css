@@ -156,7 +156,6 @@ header button {
   font-size: 14px;
 }
 #task-list{
-  display: flex;
   align-items: center;
   gap: 10px;
   padding: 12px;
@@ -165,6 +164,9 @@ header button {
   border-radius: 6px;
   margin-bottom: 8px;
   border: 1px solid var(--border);
+}
+#task-list li {
+  margin-bottom: 10px;
 }
 #task-list li .complete-btn{
   background-color: var(--success);
